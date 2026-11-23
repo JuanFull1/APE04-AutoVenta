@@ -1,0 +1,46 @@
+# Java y Maven
+**/target/
+*.jar
+*.war
+*.class
+
+# Python
+**/.venv/
+**/venv/
+**/__pycache__/
+**/.pytest_cache/
+*.pyc
+
+# React, PWA y Node.js
+**/node_modules/
+**/dist/
+**/.vite/
+
+# C# y .NET
+**/bin/
+**/obj/
+**/.vs/
+
+# Entornos de desarrollo
+**/.idea/
+*.user
+*.suo
+
+# Variables y credenciales privadas
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.sample
+**/application.properties
+**/application.yml
+**/application.yaml
+
+# Archivos temporales
+*.log
+*.tmp
+*.bak
+
+# Archivos comprimidos
+*.zip
+*.z01
+*.z02
