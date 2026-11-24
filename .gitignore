@@ -105,3 +105,8 @@ nginx.conf.backup
 
 # No excluir README.md, código fuente, SQL de migración,
 # nginx.conf, compose.yaml, dockerfiles ni *.example depurados.
+
+# Archivos adicionales de la entrega
+~$*
+**/NotificacionesApiClient.jav
+GUIA APE 04.docx
