@@ -1,46 +1,107 @@
-# Java y Maven
-**/target/
-*.jar
-*.war
-*.class
-
-# Python
-**/.venv/
-**/venv/
-**/__pycache__/
-**/.pytest_cache/
-*.pyc
-
-# React, PWA y Node.js
-**/node_modules/
-**/dist/
-**/.vite/
-
-# C# y .NET
-**/bin/
-**/obj/
-**/.vs/
-
-# Entornos de desarrollo
-**/.idea/
-*.user
-*.suo
-
-# Variables y credenciales privadas
+# AutoVenta — APE 04
+# Entornos, credenciales y configuraciones privadas
+.env
+.env.*
+!.env.example
 **/.env
 **/.env.*
 !**/.env.example
-!**/.env.sample
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+secrets.json
+**/secrets.json
 **/application.properties
 **/application.yml
 **/application.yaml
+**/application-local.properties
+**/application-dev.properties
+**/application-secret.properties
+**/application-secrets.properties
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/launchSettings.local.json
 
-# Archivos temporales
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Java / Maven / Gradle
+target/
+.gradle/
+build/
+*.class
+*.jar
+*.war
+*.ear
 *.log
+
+# Node / React / PWA
+node_modules/
+dist/
+coverage/
+.vite/
+.next/
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# .NET
+bin/
+obj/
+.vs/
+TestResults/
+*.user
+*.suo
+
+# IDE y sistema operativo
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+Desktop.ini
 *.tmp
 *.bak
+*.backup
+*.swp
 
-# Archivos comprimidos
+# Bases de datos locales / persistencia
+*.mv.db
+*.trace.db
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.ibd
+*.ibdata*
+*.sql.gz
+
+# Archivos generados y paquetes de entrega
 *.zip
-*.z01
-*.z02
+*.7z
+*.rar
+*.tar.gz
+*.pdf
+!docs/**/*.pdf
+
+# Copias de configuración de infraestructura
+nginx.conf.backup
+**/nginx.conf.backup
+
+# No excluir README.md, código fuente, SQL de migración,
+# nginx.conf, compose.yaml, dockerfiles ni *.example depurados.

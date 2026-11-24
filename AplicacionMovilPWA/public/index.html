@@ -1,0 +1,679 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+
+  <meta name="theme-color" content="#102b48" />
+
+  <meta
+    name="description"
+    content="AutoVenta: gestión móvil de vehículos, compradores y ventas."
+  />
+
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+
+  <title>AutoVenta · Gestión comercial</title>
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="/icons/icon-192.png"
+  />
+
+  <link
+    rel="apple-touch-icon"
+    href="/icons/icon-192.png"
+  />
+
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="stylesheet" href="/styles.css" />
+
+  <script type="module" src="/main.js"></script>
+</head>
+
+<body>
+<div class="app">
+
+  <!-- ENCABEZADO -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg
+            viewBox="0 0 48 48"
+            fill="none"
+            width="37"
+            height="37"
+          >
+            <path
+              d="M9 29h30l-4-11a5 5 0 0 0-5-3H18a5 5 0 0 0-5 3L9 29Z"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M9 29v8m30-8v8M9 37h30M7 29h34"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+            />
+            <circle cx="16" cy="32" r="2" fill="currentColor"/>
+            <circle cx="32" cy="32" r="2" fill="currentColor"/>
+          </svg>
+        </div>
+
+        <div>
+          <strong class="brand-title">AutoVenta</strong>
+          <span class="brand-subtitle">
+            Gestión comercial móvil
+          </span>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <span id="networkStatus" class="network">
+          Comprobando red
+        </span>
+
+        <button
+          id="logoutButton"
+          type="button"
+          class="logout hidden"
+        >
+          Cerrar sesión
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- INICIO DE SESIÓN -->
+    <section id="loginView" class="login-layout">
+
+      <div class="login-hero">
+        <span class="hero-tag">
+          PLATAFORMA COMERCIAL
+        </span>
+
+        <h1>
+          Administra cada venta
+          <span>desde donde estés.</span>
+        </h1>
+
+        <p>
+          Consulta vehículos, encuentra compradores
+          y realiza operaciones con información
+          actualizada desde los servicios REST.
+        </p>
+
+        <div class="hero-features">
+          <div>
+            <span class="feature-icon">🚙</span>
+            Catálogo de vehículos
+          </div>
+
+          <div>
+            <span class="feature-icon">👥</span>
+            Información de compradores
+          </div>
+
+          <div>
+            <span class="feature-icon">✓</span>
+            Registro y seguimiento de ventas
+          </div>
+        </div>
+
+        <div class="hero-mark" aria-hidden="true">
+          AV
+        </div>
+      </div>
+
+      <div class="login-card">
+        <span class="eyebrow">BIENVENIDO</span>
+
+        <h2>Iniciar sesión</h2>
+
+        <p class="muted">
+          Ingresa con tu cuenta autorizada.
+        </p>
+
+        <form id="loginForm">
+          <label for="loginUser">Usuario</label>
+
+          <input
+            id="loginUser"
+            name="username"
+            type="text"
+            placeholder="Ingresa tu usuario"
+            autocomplete="username"
+            autocapitalize="none"
+            spellcheck="false"
+            required
+          />
+
+          <label for="loginPassword">
+            Contraseña
+          </label>
+
+          <div class="password-row">
+            <input
+              id="loginPassword"
+              name="password"
+              type="password"
+              placeholder="Ingresa tu contraseña"
+              autocomplete="current-password"
+              required
+            />
+
+            <button
+              id="togglePassword"
+              type="button"
+              class="inline-button"
+              aria-pressed="false"
+            >
+              Mostrar
+            </button>
+          </div>
+
+          <button
+            id="loginButton"
+            class="button primary full"
+            type="submit"
+          >
+            Ingresar
+          </button>
+        </form>
+
+        <div
+          id="loginMessage"
+          class="notice hidden"
+          role="status"
+          aria-live="polite"
+        ></div>
+
+        <p class="login-note">
+          El JWT permanece en memoria durante la sesión.
+        </p>
+      </div>
+    </section>
+
+    <!-- APLICACIÓN -->
+    <section id="appView" class="hidden">
+
+      <div class="welcome">
+        <div>
+          <span class="eyebrow">
+            PANEL COMERCIAL
+          </span>
+
+          <h1>Panel de ventas</h1>
+
+          <p class="muted">
+            Sesión iniciada:
+            <strong id="currentUser"></strong>
+          </p>
+        </div>
+
+        <button
+          id="refreshButton"
+          type="button"
+          class="button secondary"
+        >
+          Actualizar datos
+        </button>
+      </div>
+
+      <!-- INDICADORES -->
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-icon blue">🚙</div>
+          <div>
+            <span>Vehículos</span>
+            <strong id="vehiclesTotal">—</strong>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon green">✓</div>
+          <div>
+            <span>Disponibles</span>
+            <strong id="availableTotal">—</strong>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon amber">👥</div>
+          <div>
+            <span>Compradores</span>
+            <strong id="buyersTotal">—</strong>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon purple">▤</div>
+          <div>
+            <span>Ventas visibles</span>
+            <strong id="salesTotal">—</strong>
+          </div>
+        </div>
+      </div>
+
+      <div
+        id="appMessage"
+        class="notice hidden"
+        role="status"
+        aria-live="polite"
+      ></div>
+
+      <!-- NAVEGACIÓN DESPLAZABLE -->
+      <nav class="tabs" aria-label="Menú principal">
+        <button
+          class="tab active"
+          type="button"
+          data-tab="catalog"
+          aria-selected="true"
+        >
+          🚙 Vehículos
+        </button>
+
+        <button
+          class="tab"
+          type="button"
+          data-tab="buyers"
+          aria-selected="false"
+        >
+          👥 Compradores
+        </button>
+
+        <button
+          class="tab"
+          type="button"
+          data-tab="sales"
+          aria-selected="false"
+        >
+          ▤ Ventas
+        </button>
+
+        <button
+          class="tab"
+          type="button"
+          data-tab="sale"
+          aria-selected="false"
+        >
+          ＋ Nueva venta
+        </button>
+
+        <button
+          class="tab"
+          type="button"
+          data-tab="status"
+          aria-selected="false"
+        >
+          ⌕ Consultar venta
+        </button>
+      </nav>
+
+      <!-- 1. CATÁLOGO -->
+      <section
+        data-panel="catalog"
+        class="content-section"
+        aria-label="Catálogo de vehículos"
+      >
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">CATÁLOGO</span>
+            <h2>Vehículos registrados</h2>
+            <p class="muted">
+              Consulta por placa, marca, modelo, año o ID.
+            </p>
+          </div>
+
+          <span id="vehicleCount" class="counter">
+            Sin consultar
+          </span>
+        </div>
+
+        <div class="filters">
+          <div class="search-field">
+            <label for="vehicleSearch">
+              Buscar vehículo
+            </label>
+
+            <input
+              id="vehicleSearch"
+              type="search"
+              placeholder="Ej. Toyota, ABC123 o 31"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="filter-field">
+            <label for="vehicleFilter">
+              Disponibilidad
+            </label>
+
+            <select id="vehicleFilter">
+              <option value="all">Todos</option>
+              <option value="available">Disponibles</option>
+              <option value="unavailable">No disponibles</option>
+            </select>
+          </div>
+
+          <button
+            id="clearVehicleSearch"
+            type="button"
+            class="button secondary clear-button"
+          >
+            Limpiar
+          </button>
+        </div>
+
+        <div id="vehicleList" class="records-grid">
+          <div class="empty-state">
+            <strong>Cargando vehículos...</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. COMPRADORES -->
+      <section
+        data-panel="buyers"
+        class="content-section hidden"
+        aria-label="Listado de compradores"
+      >
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">CLIENTES</span>
+            <h2>Compradores registrados</h2>
+
+            <p class="muted">
+              Busca por nombre, documento, correo
+              o un vehículo vinculado a sus ventas visibles.
+            </p>
+          </div>
+
+          <span id="buyerCount" class="counter">
+            Sin consultar
+          </span>
+        </div>
+
+        <div class="filters">
+          <div class="search-field">
+            <label for="buyerSearch">
+              Buscar comprador
+            </label>
+
+            <input
+              id="buyerSearch"
+              type="search"
+              placeholder="Ej. nombre, documento, placa..."
+              autocomplete="off"
+            />
+          </div>
+
+          <button
+            id="clearBuyerSearch"
+            type="button"
+            class="button secondary clear-button"
+          >
+            Limpiar
+          </button>
+        </div>
+
+        <div id="buyerList" class="records-grid">
+          <div class="empty-state">
+            <strong>Cargando compradores...</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. LISTADO DE VENTAS -->
+      <section
+        data-panel="sales"
+        class="content-section hidden"
+        aria-label="Historial de ventas"
+      >
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">HISTORIAL</span>
+            <h2>Ventas registradas</h2>
+
+            <p class="muted">
+              Busca por ID, placa, marca, modelo,
+              comprador, documento o estado.
+            </p>
+          </div>
+
+          <span id="salesCount" class="counter">
+            Sin consultar
+          </span>
+        </div>
+
+        <div class="filters">
+          <div class="search-field">
+            <label for="salesSearch">
+              Buscar venta
+            </label>
+
+            <input
+              id="salesSearch"
+              type="search"
+              placeholder="Ej. Toyota, ABC123, Juan, 18..."
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="filter-field">
+            <label for="salesFilter">
+              Estado de venta
+            </label>
+
+            <select id="salesFilter">
+              <option value="all">Todos los estados</option>
+              <option value="COMPLETADA">Completadas</option>
+              <option value="EN_REVISION">En revisión</option>
+              <option value="other">Otros estados</option>
+            </select>
+          </div>
+
+          <button
+            id="clearSalesSearch"
+            type="button"
+            class="button secondary clear-button"
+          >
+            Limpiar
+          </button>
+        </div>
+
+        <div id="salesList" class="records-grid">
+          <div class="empty-state">
+            <strong>Cargando ventas...</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. REGISTRO DE VENTAS -->
+      <section
+        data-panel="sale"
+        class="content-section hidden"
+        aria-label="Registrar nueva venta"
+      >
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">
+              NUEVA OPERACIÓN
+            </span>
+
+            <h2>Registrar venta</h2>
+
+            <p class="muted">
+              Selecciona un vehículo disponible y un comprador.
+            </p>
+          </div>
+        </div>
+
+        <div class="sale-layout">
+
+          <div class="form-card">
+            <form id="saleForm">
+
+              <div class="form-step">
+                <span>1</span>
+                Vehículo
+              </div>
+
+              <label for="saleVehicle">
+                Vehículo disponible
+              </label>
+
+              <select id="saleVehicle" required>
+                <option value="">
+                  Selecciona un vehículo
+                </option>
+              </select>
+
+              <div class="form-step second">
+                <span>2</span>
+                Comprador
+              </div>
+
+              <label for="saleBuyer">
+                Comprador registrado
+              </label>
+
+              <select id="saleBuyer" required>
+                <option value="">
+                  Selecciona un comprador
+                </option>
+              </select>
+
+              <div
+                id="saleSummary"
+                class="sale-summary"
+              >
+                Selecciona un vehículo disponible y un comprador.
+              </div>
+
+              <button
+                id="saleButton"
+                class="button primary full"
+                type="submit"
+              >
+                Registrar venta
+              </button>
+            </form>
+
+            <div
+              id="saleMessage"
+              class="notice hidden"
+              role="status"
+              aria-live="polite"
+            ></div>
+          </div>
+
+          <aside class="help-card">
+            <div class="help-icon">✓</div>
+
+            <h3>Operación protegida</h3>
+
+            <p>
+              El servicio recibe los identificadores
+              seleccionados y una clave de idempotencia
+              para controlar los reintentos de la misma venta.
+            </p>
+
+            <p class="muted">
+              El resultado definitivo se obtiene
+              directamente desde FastAPI.
+            </p>
+          </aside>
+        </div>
+
+        <div
+          id="saleResult"
+          class="result-card hidden"
+          aria-live="polite"
+        ></div>
+      </section>
+
+      <!-- 5. CONSULTAR VENTA -->
+      <section
+        data-panel="status"
+        class="content-section hidden"
+        aria-label="Consultar una venta"
+      >
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">
+              SEGUIMIENTO
+            </span>
+
+            <h2>Consultar venta</h2>
+
+            <p class="muted">
+              Introduce el identificador de una operación
+              o utiliza Ver detalle desde el historial.
+            </p>
+          </div>
+        </div>
+
+        <div class="form-card status-card">
+          <form id="statusForm">
+            <label for="saleIdInput">
+              Identificador de venta
+            </label>
+
+            <div class="lookup-row">
+              <input
+                id="saleIdInput"
+                type="number"
+                min="1"
+                step="1"
+                placeholder="Ej. 18"
+                required
+              />
+
+              <button
+                id="statusButton"
+                class="button primary"
+                type="submit"
+              >
+                Consultar estado
+              </button>
+            </div>
+          </form>
+
+          <div
+            id="statusMessage"
+            class="notice hidden"
+            role="status"
+            aria-live="polite"
+          ></div>
+
+          <div
+            id="statusResult"
+            class="result-card hidden"
+            aria-live="polite"
+          ></div>
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>AutoVenta · Aplicación PWA</span>
+    <span>Servicios REST mediante NGINX</span>
+  </footer>
+
+</div>
+</body>
+</html>
